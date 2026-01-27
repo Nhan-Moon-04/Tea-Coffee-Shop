@@ -30,12 +30,13 @@ const Products = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [searchParams, slug, currentPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, slug, currentPage, filters.category]);
 
   const fetchCategories = async () => {
     try {
       const response = await categoryAPI.getAll();
-      setCategories(response.data.categories);
+      setCategories(response.data.categories || response.data.data || []);
     } catch (error) {
       console.error('Failed to fetch categories:', error);
     }
@@ -66,8 +67,8 @@ const Products = () => {
       };
 
       const response = await productAPI.getAll(params);
-      setProducts(response.data.products);
-      setTotalPages(response.data.totalPages);
+      setProducts(response.data.products || response.data.data || []);
+      setTotalPages(response.data.totalPages || 1);
     } catch (error) {
       console.error('Failed to fetch products:', error);
     } finally {
