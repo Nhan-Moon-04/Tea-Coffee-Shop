@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Sử dụng relative URL '/api' để Nginx proxy đến backend
+// Trong development, dùng env variable hoặc fallback localhost
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 
 const api = axios.create({
   baseURL: API_URL,
