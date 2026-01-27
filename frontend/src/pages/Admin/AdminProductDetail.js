@@ -41,7 +41,11 @@ const AdminProductDetail = () => {
     try {
       setLoading(true);
       const response = await api.get(`/products/${id}`);
-      const product = response.data.data;
+      // API trả về product hoặc data
+      const product = response.data.product || response.data.data;
+      if (!product) {
+        throw new Error('Product not found');
+      }
       setFormData({
         name: product.name || '',
         description: product.description || '',
@@ -67,7 +71,8 @@ const AdminProductDetail = () => {
   const fetchCategories = async () => {
     try {
       const response = await api.get('/categories');
-      setCategories(response.data.data || []);
+      // API trả về categories hoặc data
+      setCategories(response.data.categories || response.data.data || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
@@ -130,21 +135,33 @@ const AdminProductDetail = () => {
     try {
       setSaving(true);
       const productData = {
-        ...formData,
+        name: formData.name,
+        description: formData.description,
         price: Number(formData.price),
         originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
-        stock: Number(formData.stock) || 0
+        stock: Number(formData.stock) || 0,
+        category: formData.category,
+        image: formData.image,
+        images: formData.images,
+        isActive: formData.isActive,
+        isFeatured: formData.isFeatured,
+        tags: formData.tags
       };
 
+      console.log('Saving product data:', productData);
+
       if (isNewProduct) {
-        await api.post('/products', productData);
+        const response = await api.post('/products', productData);
+        console.log('Create response:', response.data);
         toast.success('Thêm sản phẩm thành công!');
       } else {
-        await api.put(`/products/${id}`, productData);
+        const response = await api.put(`/products/${id}`, productData);
+        console.log('Update response:', response.data);
         toast.success('Cập nhật sản phẩm thành công!');
       }
       navigate('/admin/products');
     } catch (error) {
+      console.error('Save error:', error.response?.data || error);
       toast.error(error.response?.data?.message || 'Có lỗi xảy ra');
     } finally {
       setSaving(false);
