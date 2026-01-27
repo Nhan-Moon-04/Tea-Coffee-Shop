@@ -1,28 +1,18 @@
 import { useState, useEffect } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaSearch, FaImage } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { FaPlus, FaEdit, FaTrash, FaSearch, FaImage, FaEye } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 import './AdminProducts.css';
 
 const AdminProducts = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    originalPrice: '',
-    category: '',
-    image: '',
-    images: '',
-    stock: '',
-    isActive: true,
-    isFeatured: false
-  });
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
 
   useEffect(() => {
     fetchProducts();
@@ -33,7 +23,8 @@ const AdminProducts = () => {
     try {
       setLoading(true);
       const response = await api.get('/products?limit=100');
-      setProducts(response.data.data || []);
+      // API trả về products hoặc data
+      setProducts(response.data.products || response.data.data || []);
     } catch (error) {
       toast.error('Lỗi khi tải danh sách sản phẩm');
     } finally {
@@ -44,66 +35,15 @@ const AdminProducts = () => {
   const fetchCategories = async () => {
     try {
       const response = await api.get('/categories');
-      setCategories(response.data.data || []);
+      // API trả về categories hoặc data
+      setCategories(response.data.categories || response.data.data || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const productData = {
-        ...formData,
-        price: Number(formData.price),
-        originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
-        stock: Number(formData.stock),
-        images: formData.images ? formData.images.split(',').map(img => img.trim()) : []
-      };
-
-      if (editingProduct) {
-        await api.put(`/products/${editingProduct._id}`, productData);
-        toast.success('Cập nhật sản phẩm thành công!');
-      } else {
-        await api.post('/products', productData);
-        toast.success('Thêm sản phẩm thành công!');
-      }
-
-      setShowModal(false);
-      resetForm();
-      fetchProducts();
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Có lỗi xảy ra');
-    }
-  };
-
-  const handleEdit = (product) => {
-    setEditingProduct(product);
-    setFormData({
-      name: product.name,
-      description: product.description || '',
-      price: product.price,
-      originalPrice: product.originalPrice || '',
-      category: product.category?._id || product.category || '',
-      image: product.image || '',
-      images: product.images?.join(', ') || '',
-      stock: product.stock || 0,
-      isActive: product.isActive !== false,
-      isFeatured: product.isFeatured || false
-    });
-    setShowModal(true);
-  };
-
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, e) => {
+    e.stopPropagation();
     if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
       try {
         await api.delete(`/products/${id}`);
@@ -115,25 +55,12 @@ const AdminProducts = () => {
     }
   };
 
-  const resetForm = () => {
-    setEditingProduct(null);
-    setFormData({
-      name: '',
-      description: '',
-      price: '',
-      originalPrice: '',
-      category: '',
-      image: '',
-      images: '',
-      stock: '',
-      isActive: true,
-      isFeatured: false
-    });
+  const handleRowClick = (productId) => {
+    navigate(`/admin/products/${productId}`);
   };
 
-  const openAddModal = () => {
-    resetForm();
-    setShowModal(true);
+  const handleAddNew = () => {
+    navigate('/admin/products/new');
   };
 
   const formatCurrency = (amount) => {
@@ -143,9 +70,14 @@ const AdminProducts = () => {
     }).format(amount);
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = !filterCategory || product.category?._id === filterCategory;
+    const matchesStatus = !filterStatus || 
+      (filterStatus === 'active' && product.isActive) ||
+      (filterStatus === 'inactive' && !product.isActive);
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
 
   if (loading) {
     return (
@@ -160,19 +92,44 @@ const AdminProducts = () => {
     <div className="admin-products">
       <div className="page-header">
         <h1>Quản lý sản phẩm</h1>
-        <button className="btn-add" onClick={openAddModal}>
+        <button className="btn-add" onClick={handleAddNew}>
           <FaPlus /> Thêm sản phẩm
         </button>
       </div>
 
-      <div className="search-bar">
-        <FaSearch />
-        <input
-          type="text"
-          placeholder="Tìm kiếm sản phẩm..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      <div className="filters-bar">
+        <div className="search-box">
+          <FaSearch />
+          <input
+            type="text"
+            placeholder="Tìm kiếm sản phẩm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <select 
+          className="filter-select"
+          value={filterCategory} 
+          onChange={(e) => setFilterCategory(e.target.value)}
+        >
+          <option value="">Tất cả danh mục</option>
+          {categories.map((cat) => (
+            <option key={cat._id} value={cat._id}>{cat.name}</option>
+          ))}
+        </select>
+        <select 
+          className="filter-select"
+          value={filterStatus} 
+          onChange={(e) => setFilterStatus(e.target.value)}
+        >
+          <option value="">Tất cả trạng thái</option>
+          <option value="active">Đang bán</option>
+          <option value="inactive">Ngừng bán</option>
+        </select>
+      </div>
+
+      <div className="products-stats">
+        <span>Tổng: <strong>{filteredProducts.length}</strong> sản phẩm</span>
       </div>
 
       <div className="products-table-container">
@@ -190,7 +147,11 @@ const AdminProducts = () => {
           </thead>
           <tbody>
             {filteredProducts.map((product) => (
-              <tr key={product._id}>
+              <tr 
+                key={product._id} 
+                onClick={() => handleRowClick(product._id)}
+                className="clickable-row"
+              >
                 <td>
                   <div className="product-image">
                     {product.image ? (
@@ -227,10 +188,25 @@ const AdminProducts = () => {
                 </td>
                 <td>
                   <div className="actions">
-                    <button className="btn-edit" onClick={() => handleEdit(product)}>
+                    <button 
+                      className="btn-view" 
+                      onClick={(e) => { e.stopPropagation(); navigate(`/admin/products/${product._id}`); }}
+                      title="Xem chi tiết"
+                    >
+                      <FaEye />
+                    </button>
+                    <button 
+                      className="btn-edit" 
+                      onClick={(e) => { e.stopPropagation(); navigate(`/admin/products/${product._id}`); }}
+                      title="Chỉnh sửa"
+                    >
                       <FaEdit />
                     </button>
-                    <button className="btn-delete" onClick={() => handleDelete(product._id)}>
+                    <button 
+                      className="btn-delete" 
+                      onClick={(e) => handleDelete(product._id, e)}
+                      title="Xóa"
+                    >
                       <FaTrash />
                     </button>
                   </div>
@@ -242,152 +218,14 @@ const AdminProducts = () => {
 
         {filteredProducts.length === 0 && (
           <div className="empty-state">
+            <FaImage className="empty-icon" />
             <p>Không tìm thấy sản phẩm nào</p>
+            <button className="btn-add-empty" onClick={handleAddNew}>
+              <FaPlus /> Thêm sản phẩm mới
+            </button>
           </div>
         )}
       </div>
-
-      {/* Modal */}
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>{editingProduct ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới'}</h2>
-              <button className="modal-close" onClick={() => setShowModal(false)}>×</button>
-            </div>
-            
-            <form onSubmit={handleSubmit} className="product-form">
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Tên sản phẩm *</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Danh mục *</label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Chọn danh mục</option>
-                    {categories.map((cat) => (
-                      <option key={cat._id} value={cat._id}>{cat.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Mô tả</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows="3"
-                />
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Giá bán *</label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    required
-                    min="0"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Giá gốc</label>
-                  <input
-                    type="number"
-                    name="originalPrice"
-                    value={formData.originalPrice}
-                    onChange={handleInputChange}
-                    min="0"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Tồn kho *</label>
-                  <input
-                    type="number"
-                    name="stock"
-                    value={formData.stock}
-                    onChange={handleInputChange}
-                    required
-                    min="0"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Hình ảnh chính (URL)</label>
-                <input
-                  type="text"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Hình ảnh phụ (URLs, phân cách bởi dấu phẩy)</label>
-                <input
-                  type="text"
-                  name="images"
-                  value={formData.images}
-                  onChange={handleInputChange}
-                  placeholder="url1, url2, url3"
-                />
-              </div>
-
-              <div className="form-row checkboxes">
-                <div className="form-group checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="isActive"
-                      checked={formData.isActive}
-                      onChange={handleInputChange}
-                    />
-                    Đang bán
-                  </label>
-                </div>
-                <div className="form-group checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="isFeatured"
-                      checked={formData.isFeatured}
-                      onChange={handleInputChange}
-                    />
-                    Sản phẩm nổi bật
-                  </label>
-                </div>
-              </div>
-
-              <div className="form-actions">
-                <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>
-                  Hủy
-                </button>
-                <button type="submit" className="btn-submit">
-                  {editingProduct ? 'Cập nhật' : 'Thêm mới'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
