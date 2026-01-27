@@ -154,8 +154,8 @@ const AdminProducts = () => {
               >
                 <td>
                   <div className="product-image">
-                    {product.image ? (
-                      <img src={product.image} alt={product.name} />
+                    {product.thumbnail || product.image ? (
+                      <img src={product.thumbnail || product.image} alt={product.name} />
                     ) : (
                       <FaImage />
                     )}

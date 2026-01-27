@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaSave, FaTrash, FaImage, FaPlus, FaTimes } from 'react-icons/fa';
+import { FaArrowLeft, FaSave, FaTrash, FaImage, FaPlus, FaTimes, FaUpload, FaSpinner } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 import './AdminProductDetail.css';
@@ -12,6 +12,8 @@ const AdminProductDetail = () => {
   
   const [loading, setLoading] = useState(!isNewProduct);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadingMultiple, setUploadingMultiple] = useState(false);
   const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
@@ -19,7 +21,7 @@ const AdminProductDetail = () => {
     price: '',
     originalPrice: '',
     category: '',
-    image: '',
+    thumbnail: '',
     images: [],
     stock: '',
     isActive: true,
@@ -35,6 +37,7 @@ const AdminProductDetail = () => {
     if (!isNewProduct) {
       fetchProduct();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isNewProduct]);
 
   const fetchProduct = async () => {
@@ -52,14 +55,14 @@ const AdminProductDetail = () => {
         price: product.price || '',
         originalPrice: product.originalPrice || '',
         category: product.category?._id || product.category || '',
-        image: product.image || '',
+        thumbnail: product.thumbnail || '',
         images: product.images || [],
         stock: product.stock || 0,
         isActive: product.isActive !== false,
         isFeatured: product.isFeatured || false,
         tags: product.tags || []
       });
-      setPreviewImage(product.image || '');
+      setPreviewImage(product.thumbnail || '');
     } catch (error) {
       toast.error('Không tìm thấy sản phẩm');
       navigate('/admin/products');
@@ -85,8 +88,87 @@ const AdminProductDetail = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
 
-    if (name === 'image') {
+    if (name === 'thumbnail') {
       setPreviewImage(value);
+    }
+  };
+
+  // Upload ảnh chính
+  const handleUploadMainImage = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file size (max 20MB)
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error('File ảnh không được lớn hơn 20MB');
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const formDataUpload = new FormData();
+      formDataUpload.append('image', file);
+
+      const response = await api.post('/upload', formDataUpload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.success) {
+        setFormData(prev => ({
+          ...prev,
+          thumbnail: response.data.url
+        }));
+        setPreviewImage(response.data.url);
+        toast.success('Upload ảnh thành công!');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error(error.response?.data?.message || 'Lỗi khi upload ảnh');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Upload nhiều ảnh phụ
+  const handleUploadMultipleImages = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    // Validate file sizes
+    const invalidFiles = files.filter(file => file.size > 5 * 1024 * 1024);
+    if (invalidFiles.length > 0) {
+      toast.error('Mỗi file ảnh không được lớn hơn 5MB');
+      return;
+    }
+
+    try {
+      setUploadingMultiple(true);
+      const formDataUpload = new FormData();
+      files.forEach(file => {
+        formDataUpload.append('images', file);
+      });
+
+      const response = await api.post('/upload/multiple', formDataUpload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.success) {
+        const newUrls = response.data.images.map(img => img.url);
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, ...newUrls]
+        }));
+        toast.success(`Upload ${newUrls.length} ảnh thành công!`);
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error(error.response?.data?.message || 'Lỗi khi upload ảnh');
+    } finally {
+      setUploadingMultiple(false);
     }
   };
 
@@ -141,7 +223,7 @@ const AdminProductDetail = () => {
         originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
         stock: Number(formData.stock) || 0,
         category: formData.category,
-        image: formData.image,
+        thumbnail: formData.thumbnail,
         images: formData.images,
         isActive: formData.isActive,
         isFeatured: formData.isFeatured,
@@ -306,30 +388,74 @@ const AdminProductDetail = () => {
               <h3>Hình ảnh sản phẩm</h3>
               
               <div className="form-group">
-                <label>Hình ảnh chính (URL)</label>
-                <input
-                  type="text"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  placeholder="https://example.com/image.jpg"
-                />
+                <label>Hình ảnh chính</label>
+                <div className="image-upload-section">
+                  <div className="upload-options">
+                    <label className="btn-upload">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleUploadMainImage}
+                        style={{ display: 'none' }}
+                        disabled={uploading}
+                      />
+                      {uploading ? (
+                        <><FaSpinner className="spin" /> Đang upload...</>
+                      ) : (
+                        <><FaUpload /> Upload ảnh</>
+                      )}
+                    </label>
+                    <span className="or-divider">hoặc</span>
+                    <input
+                      type="text"
+                      name="thumbnail"
+                      value={formData.thumbnail}
+                      onChange={handleInputChange}
+                      placeholder="Dán URL hình ảnh"
+                      className="url-input"
+                    />
+                  </div>
+                </div>
               </div>
 
               {previewImage && (
                 <div className="image-preview main-preview">
                   <img src={previewImage} alt="Preview" onError={(e) => e.target.style.display = 'none'} />
+                  <button 
+                    type="button" 
+                    className="btn-remove-preview"
+                    onClick={() => { setPreviewImage(''); setFormData(prev => ({ ...prev, thumbnail: '' })); }}
+                  >
+                    <FaTimes />
+                  </button>
                 </div>
               )}
 
               <div className="form-group">
                 <label>Hình ảnh phụ</label>
-                <div className="image-input-row">
+                <div className="image-upload-section">
+                  <label className="btn-upload">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleUploadMultipleImages}
+                      style={{ display: 'none' }}
+                      disabled={uploadingMultiple}
+                    />
+                    {uploadingMultiple ? (
+                      <><FaSpinner className="spin" /> Đang upload...</>
+                    ) : (
+                      <><FaUpload /> Upload nhiều ảnh</>
+                    )}
+                  </label>
+                </div>
+                <div className="image-input-row" style={{ marginTop: '10px' }}>
                   <input
                     type="text"
                     value={newImageUrl}
                     onChange={(e) => setNewImageUrl(e.target.value)}
-                    placeholder="Nhập URL hình ảnh"
+                    placeholder="Hoặc dán URL hình ảnh"
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddImage())}
                   />
                   <button type="button" className="btn-add-image" onClick={handleAddImage}>
