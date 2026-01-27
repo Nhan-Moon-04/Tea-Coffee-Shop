@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiMinus, FiPlus, FiShoppingCart, FiHeart, FiShare2, FiStar } from 'react-icons/fi';
 import { productAPI } from '../services/api';
@@ -23,11 +23,7 @@ const ProductDetail = () => {
   const [selectedToppings, setSelectedToppings] = useState([]);
   const [note, setNote] = useState('');
 
-  useEffect(() => {
-    fetchProduct();
-  }, [slug]);
-
-  const fetchProduct = async () => {
+  const fetchProduct = useCallback(async () => {
     try {
       setLoading(true);
       const response = await productAPI.getBySlug(slug);
@@ -42,7 +38,11 @@ const ProductDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug, navigate]);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {

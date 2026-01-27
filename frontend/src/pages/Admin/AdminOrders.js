@@ -68,17 +68,6 @@ const AdminOrders = () => {
     return statusClasses[status] || 'status-pending';
   };
 
-  const getStatusText = (status) => {
-    const statusTexts = {
-      pending: 'Chờ xử lý',
-      confirmed: 'Đã xác nhận',
-      shipping: 'Đang giao',
-      delivered: 'Đã giao',
-      cancelled: 'Đã hủy'
-    };
-    return statusTexts[status] || status;
-  };
-
   const filteredOrders = orders.filter(order => {
     const matchesStatus = filterStatus === 'all' || order.status === filterStatus;
     const matchesSearch = order._id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
