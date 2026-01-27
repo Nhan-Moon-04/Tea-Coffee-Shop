@@ -1,3 +1,17 @@
+/* Footer Mini Map */
+.footer-mini-map {
+  margin-top: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+  line-height: 0;
+  max-width: 250px;
+}
+
+.footer-mini-map iframe {
+  display: block;
+  height: 120px;
+}
+
 .footer {
   background-color: var(--primary-dark);
   color: var(--white);
@@ -7,8 +21,14 @@
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.5fr;
-  gap: 40px;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr 1.5fr;
+  gap: 30px;
+  align-items: start;
+}
+
+/* Footer Map Column */
+.footer-map-col {
+  min-width: 300px;
 }
 
 /* Footer Logo */

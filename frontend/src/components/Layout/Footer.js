@@ -19,7 +19,7 @@ const Footer = () => {
               được chế biến từ nguyên liệu tươi ngon và tâm huyết.
             </p>
             <div className="footer-social">
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="social-link">
+              <a href="https://www.facebook.com/thiennhan1611" target="_blank" rel="noreferrer" className="social-link">
                 <FiFacebook />
               </a>
               <a href="https://instagram.com" target="_blank" rel="noreferrer" className="social-link">
@@ -57,17 +57,34 @@ const Footer = () => {
             <ul className="footer-contact">
               <li>
                 <FiMapPin className="contact-icon" />
-                <span>123 Đường ABC, Quận 1, TP.HCM</span>
+                <span>Phú Thọ, Tam Nông, Đồng Tháp</span>
               </li>
               <li>
                 <FiPhone className="contact-icon" />
-                <span>0123 456 789</span>
+                <a href="tel:0989057191">0989 057 191</a>
               </li>
               <li>
                 <FiMail className="contact-icon" />
-                <span>contact@teacoffee.com</span>
+                <a href="mailto:nthiennhan1611@gmail.com">nthiennhan1611@gmail.com</a>
               </li>
             </ul>
+          </div>
+
+          {/* Map */}
+          <div className="footer-col footer-map-col">
+            <h3 className="footer-title">Bản đồ</h3>
+            <div className="footer-mini-map">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.2!2d105.4282037!3d10.6916983!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310a47089c81365b%3A0xd3dd7ca4feb8b39b!2zTmjDoCBQaMOibiBQaOG7kWkgVHLDoCAmIEPDoCBQaMOqIEhp4buBbg!5e0!3m2!1svi!2svn!4v1706400000000"
+                width="100%"
+                height="180"
+                style={{ border: 0, borderRadius: '8px' }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Nhà Phân Phối Trà & Cà Phê Hiền"
+              ></iframe>
+            </div>
           </div>
         </div>
 
