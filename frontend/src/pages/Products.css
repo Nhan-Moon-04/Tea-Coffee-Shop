@@ -327,3 +327,32 @@
     font-size: 28px;
   }
 }
+
+/* Products Page Loading Spinner */
+.products-content .loading-spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 9999;
+}
+
+.products-content .loading-spinner .spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--gray-300);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.products-content .loading-spinner p {
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 500;
+}

@@ -109,7 +109,7 @@ const AdminCategories = () => {
   if (loading) {
     return (
       <div className="admin-loading">
-        <div className="loading-spinner"></div>
+        <div className="spinner"></div>
         <p>Đang tải...</p>
       </div>
     );

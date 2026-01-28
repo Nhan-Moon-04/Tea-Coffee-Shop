@@ -18,28 +18,35 @@
 }
 
 .dashboard-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 50vh;
-  gap: 1rem;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 9999;
 }
 
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #4ecdc4;
+.dashboard-loading .spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e0e0e0;
+  border-top-color: #4ecdc4;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: dashboard-spin 1s linear infinite;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
+.dashboard-loading p {
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 500;
+}
+
+@keyframes dashboard-spin {
+  to {
     transform: rotate(360deg);
   }
 }

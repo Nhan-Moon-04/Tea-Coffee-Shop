@@ -1,11 +1,36 @@
 /* Common Admin Styles */
 .admin-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 50vh;
-  gap: 1rem;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 9999;
+}
+
+.admin-loading .spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e0e0e0;
+  border-top-color: #4ecdc4;
+  border-radius: 50%;
+  animation: admin-spin 1s linear infinite;
+}
+
+.admin-loading p {
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 500;
+}
+
+@keyframes admin-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .page-header {
