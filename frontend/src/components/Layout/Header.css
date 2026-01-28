@@ -45,6 +45,7 @@
 .nav-list {
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .nav-link {
@@ -54,6 +55,7 @@
   color: var(--text-color);
   border-radius: var(--border-radius);
   transition: var(--transition);
+  white-space: nowrap;
 }
 
 .nav-link:hover {
@@ -123,6 +125,10 @@
 .user-name {
   font-size: 14px;
   font-weight: 500;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-dropdown {
