@@ -25,7 +25,7 @@ const AdminCategories = () => {
     try {
       setLoading(true);
       const response = await api.get('/categories');
-      setCategories(response.data.data || []);
+      setCategories(response.data.categories || response.data.data || []);
     } catch (error) {
       toast.error('Lỗi khi tải danh sách danh mục');
     } finally {

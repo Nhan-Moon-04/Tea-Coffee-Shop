@@ -153,7 +153,7 @@ const AdminProducts = () => {
                 className="clickable-row"
               >
                 <td>
-                  <div className="product-image">
+                  <div className="admin-product-thumb">
                     {product.thumbnail || product.image ? (
                       <img src={product.thumbnail || product.image} alt={product.name} />
                     ) : (

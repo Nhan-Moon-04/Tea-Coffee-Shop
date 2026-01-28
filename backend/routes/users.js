@@ -142,4 +142,75 @@ router.put('/:id/status', protect, authorize('admin'), async (req, res) => {
   }
 });
 
+// @desc    Update user (admin only)
+// @route   PUT /api/users/:id
+// @access  Private/Admin
+router.put('/:id', protect, authorize('admin'), async (req, res) => {
+  try {
+    const { name, phone, role, isActive } = req.body;
+    
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { name, phone, role, isActive },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy người dùng'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Cập nhật người dùng thành công',
+      user
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi server'
+    });
+  }
+});
+
+// @desc    Delete user (admin only)
+// @route   DELETE /api/users/:id
+// @access  Private/Admin
+router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy người dùng'
+      });
+    }
+
+    // Prevent admin from deleting themselves
+    if (user._id.toString() === req.user.id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Không thể xóa chính mình'
+      });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+
+    res.json({
+      success: true,
+      message: 'Xóa người dùng thành công'
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi server'
+    });
+  }
+});
+
 module.exports = router;

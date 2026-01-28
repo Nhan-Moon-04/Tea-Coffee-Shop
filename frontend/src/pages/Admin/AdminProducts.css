@@ -136,10 +136,14 @@
   background: #f0f7ff;
 }
 
-/* Product Image */
-.product-image {
+/* Admin Product Thumbnail */
+.admin-product-thumb {
   width: 50px;
   height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
   border-radius: 8px;
   overflow: hidden;
   background: #f5f5f5;
@@ -147,12 +151,16 @@
   align-items: center;
   justify-content: center;
   color: #ccc;
+  flex-shrink: 0;
 }
 
-.product-image img {
-  width: 100%;
-  height: 100%;
+.admin-product-thumb img {
+  width: 50px;
+  height: 50px;
+  max-width: 50px;
+  max-height: 50px;
   object-fit: cover;
+  display: block;
 }
 
 /* Product Name & Badge */

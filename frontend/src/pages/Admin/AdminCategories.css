@@ -7,7 +7,7 @@
 
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
@@ -19,6 +19,8 @@
   transition:
     transform 0.2s,
     box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
 }
 
 .category-card:hover {
@@ -38,6 +40,7 @@
   justify-content: center;
   color: #ccc;
   font-size: 3rem;
+  flex-shrink: 0;
 }
 
 .category-image img {
@@ -48,6 +51,7 @@
 
 .category-info {
   padding: 1.25rem;
+  flex: 1;
 }
 
 .category-info h3 {
@@ -70,10 +74,25 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .category-meta .status {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
   font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.category-meta .status.active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.category-meta .status.inactive {
+  background: #f8d7da;
+  color: #721c24;
 }
 
 .category-meta .order {

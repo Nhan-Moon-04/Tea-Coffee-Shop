@@ -52,9 +52,16 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true, user };
     } catch (error) {
+      // Handle validation errors array or single message
+      let errorMessage = 'Đăng nhập thất bại';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.errors && error.response.data.errors.length > 0) {
+        errorMessage = error.response.data.errors[0].msg;
+      }
       return {
         success: false,
-        message: error.response?.data?.message || 'Đăng nhập thất bại'
+        message: errorMessage
       };
     }
   };
@@ -72,9 +79,16 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true, user };
     } catch (error) {
+      // Handle validation errors array or single message
+      let errorMessage = 'Đăng ký thất bại';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.errors && error.response.data.errors.length > 0) {
+        errorMessage = error.response.data.errors[0].msg;
+      }
       return {
         success: false,
-        message: error.response?.data?.message || 'Đăng ký thất bại'
+        message: errorMessage
       };
     }
   };

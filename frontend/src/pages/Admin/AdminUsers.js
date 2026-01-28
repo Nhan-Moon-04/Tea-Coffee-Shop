@@ -27,7 +27,7 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       const response = await api.get('/users');
-      setUsers(response.data.data || []);
+      setUsers(response.data.users || response.data.data || []);
     } catch (error) {
       toast.error('Lỗi khi tải danh sách người dùng');
     } finally {
