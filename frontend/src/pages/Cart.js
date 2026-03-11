@@ -15,8 +15,7 @@ const Cart = () => {
   };
 
   const calculateItemTotal = (item) => {
-    const toppingsPrice = item.toppings?.reduce((sum, t) => sum + t.price, 0) || 0;
-    return (item.price + toppingsPrice) * item.quantity;
+    return item.price * item.quantity;
   };
 
   if (cart.items.length === 0) {
@@ -66,15 +65,8 @@ const Cart = () => {
                       {item.product?.name}
                     </Link>
                     <div className="item-options">
-                      {item.size && <span>Size: {item.size}</span>}
-                      {item.sweetLevel && <span>Ngọt: {item.sweetLevel}</span>}
-                      {item.iceLevel && <span>Đá: {item.iceLevel}</span>}
+                      {item.variant && <span>Phân loại: {item.variant}</span>}
                     </div>
-                    {item.toppings?.length > 0 && (
-                      <div className="item-toppings">
-                        Topping: {item.toppings.map(t => t.name).join(', ')}
-                      </div>
-                    )}
                     {item.note && (
                       <div className="item-note">Ghi chú: {item.note}</div>
                     )}

@@ -13,13 +13,7 @@ const OrderItemSchema = new mongoose.Schema({
     required: true,
     min: 1
   },
-  size: String,
-  sweetLevel: String,
-  iceLevel: String,
-  toppings: [{
-    name: String,
-    price: Number
-  }],
+  variant: String,
   price: {
     type: Number,
     required: true

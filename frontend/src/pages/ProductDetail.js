@@ -17,10 +17,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState('');
-  const [selectedSweet, setSelectedSweet] = useState('100%');
-  const [selectedIce, setSelectedIce] = useState('Bình thường');
-  const [selectedToppings, setSelectedToppings] = useState([]);
+  const [selectedVariant, setSelectedVariant] = useState('');
   const [note, setNote] = useState('');
 
   const fetchProduct = useCallback(async () => {
@@ -28,8 +25,8 @@ const ProductDetail = () => {
       setLoading(true);
       const response = await productAPI.getBySlug(slug);
       setProduct(response.data.product);
-      if (response.data.product.sizes?.length > 0) {
-        setSelectedSize(response.data.product.sizes[0].name);
+      if (response.data.product.variants?.length > 0) {
+        setSelectedVariant(response.data.product.variants[0].name);
       }
     } catch (error) {
       console.error('Failed to fetch product:', error);
@@ -56,24 +53,12 @@ const ProductDetail = () => {
     
     let basePrice = product.salePrice || product.price;
     
-    if (selectedSize && product.sizes?.length > 0) {
-      const sizeOption = product.sizes.find(s => s.name === selectedSize);
-      if (sizeOption) basePrice = sizeOption.price;
+    if (selectedVariant && product.variants?.length > 0) {
+      const variantOption = product.variants.find(v => v.name === selectedVariant);
+      if (variantOption) basePrice = variantOption.price;
     }
-
-    const toppingsPrice = selectedToppings.reduce((sum, t) => sum + t.price, 0);
     
-    return (basePrice + toppingsPrice) * quantity;
-  };
-
-  const handleToppingToggle = (topping) => {
-    setSelectedToppings(prev => {
-      const exists = prev.find(t => t.name === topping.name);
-      if (exists) {
-        return prev.filter(t => t.name !== topping.name);
-      }
-      return [...prev, topping];
-    });
+    return basePrice * quantity;
   };
 
   const handleAddToCart = async () => {
@@ -84,10 +69,7 @@ const ProductDetail = () => {
 
     await addToCart(product._id, {
       quantity,
-      size: selectedSize,
-      sweetLevel: selectedSweet,
-      iceLevel: selectedIce,
-      toppings: selectedToppings,
+      variant: selectedVariant,
       note
     });
   };
@@ -170,78 +152,56 @@ const ProductDetail = () => {
               )}
             </div>
 
-            <p className="product-description">{product.shortDescription || product.description}</p>
+            {/* Product Specs */}
+            {(product.brand || product.origin || product.weight) && (
+              <div className="product-specs">
+                {product.brand && (
+                  <div className="spec-item">
+                    <span className="spec-label">Thương hiệu:</span>
+                    <span className="spec-value">{product.brand}</span>
+                  </div>
+                )}
+                {product.origin && (
+                  <div className="spec-item">
+                    <span className="spec-label">Xuất xứ:</span>
+                    <span className="spec-value">{product.origin}</span>
+                  </div>
+                )}
+                {product.weight && (
+                  <div className="spec-item">
+                    <span className="spec-label">Trọng lượng:</span>
+                    <span className="spec-value">{product.weight}</span>
+                  </div>
+                )}
+                {product.unit && (
+                  <div className="spec-item">
+                    <span className="spec-label">Đơn vị:</span>
+                    <span className="spec-value">{product.unit}</span>
+                  </div>
+                )}
+                <div className="spec-item">
+                  <span className="spec-label">Tình trạng:</span>
+                  <span className="spec-value" style={{ color: product.stock > 0 ? '#27ae60' : '#e74c3c' }}>
+                    {product.stock > 0 ? `Còn hàng (${product.stock})` : 'Hết hàng'}
+                  </span>
+                </div>
+              </div>
+            )}
 
-            {/* Size Selection */}
-            {product.sizes?.length > 0 && (
+            {/* Variant Selection */}
+            {product.variants?.length > 0 && (
               <div className="option-group">
-                <label>Kích cỡ:</label>
+                <label>Phân loại:</label>
                 <div className="size-options">
-                  {product.sizes.map(size => (
+                  {product.variants.map(variant => (
                     <button
-                      key={size.name}
-                      className={`size-btn ${selectedSize === size.name ? 'active' : ''}`}
-                      onClick={() => setSelectedSize(size.name)}
+                      key={variant.name}
+                      className={`size-btn ${selectedVariant === variant.name ? 'active' : ''}`}
+                      onClick={() => setSelectedVariant(variant.name)}
                     >
-                      {size.name}
-                      <span>{formatPrice(size.price)}</span>
+                      {variant.name}
+                      <span>{formatPrice(variant.price)}</span>
                     </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Sweet Level */}
-            {product.sweetLevels?.length > 0 && (
-              <div className="option-group">
-                <label>Độ ngọt:</label>
-                <div className="radio-options">
-                  {product.sweetLevels.map(level => (
-                    <button
-                      key={level}
-                      className={`option-btn ${selectedSweet === level ? 'active' : ''}`}
-                      onClick={() => setSelectedSweet(level)}
-                    >
-                      {level}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Ice Level */}
-            {product.iceLevels?.length > 0 && (
-              <div className="option-group">
-                <label>Đá:</label>
-                <div className="radio-options">
-                  {product.iceLevels.map(level => (
-                    <button
-                      key={level}
-                      className={`option-btn ${selectedIce === level ? 'active' : ''}`}
-                      onClick={() => setSelectedIce(level)}
-                    >
-                      {level}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Toppings */}
-            {product.toppings?.length > 0 && (
-              <div className="option-group">
-                <label>Topping thêm:</label>
-                <div className="topping-options">
-                  {product.toppings.map(topping => (
-                    <label key={topping.name} className="topping-item">
-                      <input
-                        type="checkbox"
-                        checked={selectedToppings.some(t => t.name === topping.name)}
-                        onChange={() => handleToppingToggle(topping)}
-                      />
-                      <span className="topping-name">{topping.name}</span>
-                      <span className="topping-price">+{formatPrice(topping.price)}</span>
-                    </label>
                   ))}
                 </div>
               </div>
@@ -252,7 +212,7 @@ const ProductDetail = () => {
               <label>Ghi chú:</label>
               <textarea
                 className="note-input"
-                placeholder="Nhập ghi chú cho đồ uống (nếu có)"
+                placeholder="Nhập ghi chú cho đơn hàng (nếu có)"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 rows={2}
@@ -271,7 +231,7 @@ const ProductDetail = () => {
                 <span className="qty-value">{quantity}</span>
                 <button
                   className="qty-btn"
-                  onClick={() => setQuantity(prev => prev + 1)}
+                  onClick={() => setQuantity(prev => Math.min(product.stock || 999, prev + 1))}
                 >
                   <FiPlus />
                 </button>
@@ -283,9 +243,13 @@ const ProductDetail = () => {
             </div>
 
             <div className="action-buttons">
-              <button className="btn btn-primary btn-lg" onClick={handleAddToCart}>
+              <button 
+                className="btn btn-primary btn-lg" 
+                onClick={handleAddToCart}
+                disabled={product.stock <= 0}
+              >
                 <FiShoppingCart />
-                Thêm vào giỏ hàng
+                {product.stock > 0 ? 'Thêm vào giỏ hàng' : 'Hết hàng'}
               </button>
               <button className="btn btn-outline btn-icon">
                 <FiHeart />

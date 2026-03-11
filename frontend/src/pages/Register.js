@@ -220,7 +220,7 @@ const Register = () => {
 
         <div className="auth-banner">
           <div className="auth-banner-content">
-            <h2>Tea & Coffee Shop</h2>
+            <h2>Hiền Tea Coffee</h2>
             <p>Tham gia cộng đồng yêu trà và cà phê của chúng tôi</p>
             <img 
               src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500" 

@@ -334,6 +334,37 @@
   box-shadow: var(--shadow);
 }
 
+/* Product Specs */
+.product-specs {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 16px 0;
+}
+
+.spec-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.spec-item:last-child {
+  border-bottom: none;
+}
+
+.spec-label {
+  color: #6c757d;
+  min-width: 120px;
+  font-size: 14px;
+}
+
+.spec-value {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
 .product-full-description h2 {
   font-size: 24px;
   font-weight: 600;

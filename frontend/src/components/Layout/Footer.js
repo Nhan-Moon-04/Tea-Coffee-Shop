@@ -11,12 +11,12 @@ const Footer = () => {
           {/* About */}
           <div className="footer-col">
             <div className="footer-logo">
-              <span className="logo-icon">☕</span>
-              <span className="logo-text">Tea & Coffee</span>
+              <img src="/logo.jpg" alt="Hiền Tea Coffee" className="logo-img" style={{ height: '36px', borderRadius: '50%' }} />
+              <span className="logo-text">Hiền Tea Coffee</span>
             </div>
             <p className="footer-about">
-              Chúng tôi mang đến cho bạn những ly trà và cà phê ngon nhất, 
-              được chế biến từ nguyên liệu tươi ngon và tâm huyết.
+              Chuyên cung cấp cà phê, trà và các sản phẩm chất lượng cao. 
+              Cam kết hàng chính hãng, giá tốt, giao hàng nhanh chóng.
             </p>
             <div className="footer-social">
               <a href="https://www.facebook.com/thiennhan1611" target="_blank" rel="noreferrer" className="social-link">
@@ -45,9 +45,9 @@ const Footer = () => {
             <ul className="footer-links">
               <li><Link to="/category/ca-phe">Cà phê</Link></li>
               <li><Link to="/category/tra">Trà</Link></li>
-              <li><Link to="/category/tra-sua">Trà sữa</Link></li>
-              <li><Link to="/category/da-xay">Đá xay</Link></li>
-              <li><Link to="/category/banh-ngot">Bánh ngọt</Link></li>
+              <li><Link to="/category/combo-hop-qua">Combo & Hộp Quà</Link></li>
+              <li><Link to="/category/nguyen-lieu-pha-che">Nguyên Liệu</Link></li>
+              <li><Link to="/category/phu-kien">Phụ Kiện</Link></li>
             </ul>
           </div>
 
@@ -82,14 +82,14 @@ const Footer = () => {
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Nhà Phân Phối Trà & Cà Phê Hiền"
+                title="Nhà Phân Phối Trà & Cà Phê Hiền Tea Coffee"
               ></iframe>
             </div>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; 2024 Tea & Coffee Shop. All rights reserved.</p>
+          <p>&copy; 2024 Hiền Tea Coffee. All rights reserved.</p>
         </div>
       </div>
     </footer>

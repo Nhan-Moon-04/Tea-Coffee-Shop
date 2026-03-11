@@ -27,7 +27,7 @@ app.use('/api/upload', require('./routes/upload'));
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Tea & Coffee Shop API is running' });
+  res.json({ status: 'OK', message: 'Hiền Tea Coffee API is running' });
 });
 
 // Error handling middleware

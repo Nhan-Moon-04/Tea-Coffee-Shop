@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiArrowRight, FiCoffee, FiTruck, FiGift, FiHeart } from 'react-icons/fi';
+import { FiArrowRight, FiPackage, FiTruck, FiGift, FiShield } from 'react-icons/fi';
 import ProductCard from '../components/Product/ProductCard';
 import { productAPI, categoryAPI } from '../services/api';
 import './Home.css';
@@ -52,12 +52,12 @@ const Home = () => {
         <div className="container">
           <div className="hero-content">
             <h1 className="hero-title">
-              Khám phá hương vị<br />
-              <span>Trà & Cà Phê</span> tuyệt hảo
+              Chất lượng thượng hạng<br />
+              <span>Trà & Cà Phê</span> Hiền Tea Coffee
             </h1>
             <p className="hero-subtitle">
-              Thưởng thức những ly đồ uống được chế biến từ nguyên liệu tươi ngon, 
-              mang đến cho bạn trải nghiệm hoàn hảo mỗi ngày.
+              Chuyên cung cấp cà phê rang xay, trà nguyên chất 
+              và các sản phẩm chất lượng cao từ thương hiệu Hiền Tea Coffee.
             </p>
             <div className="hero-buttons">
               <Link to="/products" className="btn btn-primary btn-lg">
@@ -71,8 +71,8 @@ const Home = () => {
           </div>
           <div className="hero-image">
             <img 
-              src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600" 
-              alt="Coffee" 
+              src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600" 
+              alt="Cà phê Hiền Tea Coffee" 
             />
           </div>
         </div>
@@ -84,10 +84,10 @@ const Home = () => {
           <div className="features-grid">
             <div className="feature-item">
               <div className="feature-icon">
-                <FiCoffee />
+                <FiPackage />
               </div>
-              <h3>Nguyên liệu tươi ngon</h3>
-              <p>Chọn lọc kỹ lưỡng từ những vùng nguyên liệu tốt nhất</p>
+              <h3>Sản phẩm chính hãng</h3>
+              <p>100% hàng nguyên chất, nguồn gốc rõ ràng</p>
             </div>
             <div className="feature-item">
               <div className="feature-icon">
@@ -105,10 +105,10 @@ const Home = () => {
             </div>
             <div className="feature-item">
               <div className="feature-icon">
-                <FiHeart />
+                <FiShield />
               </div>
-              <h3>Phục vụ tận tâm</h3>
-              <p>Đội ngũ nhân viên thân thiện, nhiệt tình</p>
+              <h3>Đảm bảo chất lượng</h3>
+              <p>Đổi trả trong 7 ngày nếu không hài lòng</p>
             </div>
           </div>
         </div>

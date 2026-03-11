@@ -105,8 +105,9 @@
 
 /* Categories */
 .categories-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 20px;
 }
 
@@ -115,6 +116,9 @@
   height: 250px;
   border-radius: var(--border-radius);
   overflow: hidden;
+  flex: 0 1 220px;
+  min-width: 180px;
+  max-width: 280px;
 }
 
 .category-image {
@@ -277,7 +281,7 @@
   }
 
   .categories-grid {
-    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
   }
 }
 
@@ -295,11 +299,12 @@
   }
 
   .categories-grid {
-    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
   }
 
   .category-card {
     height: 200px;
+    flex: 0 1 180px;
   }
 
   .promo-content h2 {
@@ -331,11 +336,13 @@
   }
 
   .categories-grid {
-    grid-template-columns: 1fr;
+    justify-content: center;
   }
 
   .category-card {
     height: 180px;
+    flex: 1 1 100%;
+    max-width: 100%;
   }
 }
 

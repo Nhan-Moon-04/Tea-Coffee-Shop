@@ -12,23 +12,10 @@ const CartItemSchema = new mongoose.Schema({
     min: [1, 'Số lượng phải ít nhất là 1'],
     default: 1
   },
-  size: {
+  variant: {
     type: String,
-    enum: ['S', 'M', 'L', 'XL'],
-    default: 'M'
+    default: ''
   },
-  sweetLevel: {
-    type: String,
-    default: '100%'
-  },
-  iceLevel: {
-    type: String,
-    default: 'Bình thường'
-  },
-  toppings: [{
-    name: String,
-    price: Number
-  }],
   price: {
     type: Number,
     required: true
@@ -58,8 +45,7 @@ const CartSchema = new mongoose.Schema({
 // Calculate total before save
 CartSchema.pre('save', function(next) {
   this.totalAmount = this.items.reduce((total, item) => {
-    const toppingsPrice = item.toppings.reduce((sum, t) => sum + (t.price || 0), 0);
-    return total + ((item.price + toppingsPrice) * item.quantity);
+    return total + (item.price * item.quantity);
   }, 0);
   next();
 });

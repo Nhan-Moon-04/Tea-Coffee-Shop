@@ -24,8 +24,8 @@ const Header = () => {
         <div className="header-inner">
           {/* Logo */}
           <Link to="/" className="logo">
-            <span className="logo-icon">☕</span>
-            <span className="logo-text">Tea & Coffee</span>
+            <img src="/logo.jpg" alt="Hiền Tea Coffee" className="logo-img" style={{ height: '40px', borderRadius: '50%' }} />
+            <span className="logo-text">Hiền Tea Coffee</span>
           </Link>
 
           {/* Navigation */}
@@ -52,8 +52,8 @@ const Header = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/category/tra-sua" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                  Trà sữa
+                <Link to="/category/combo-hop-qua" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                  Combo & Quà
                 </Link>
               </li>
             </ul>

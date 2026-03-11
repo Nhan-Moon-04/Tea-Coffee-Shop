@@ -119,7 +119,7 @@ const Products = () => {
         {/* Page Header */}
         <div className="page-header">
           <h1>{getCategoryTitle()}</h1>
-          <p>Khám phá các sản phẩm trà và cà phê ngon nhất</p>
+          <p>Khám phá các sản phẩm cà phê, trà chất lượng cao</p>
         </div>
 
         <div className="products-layout">

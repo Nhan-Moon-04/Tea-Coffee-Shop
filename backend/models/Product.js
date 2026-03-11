@@ -42,33 +42,31 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  // Các kích cỡ cho đồ uống
-  sizes: [{
-    name: {
-      type: String,
-      enum: ['S', 'M', 'L', 'XL'],
-      required: true
-    },
-    price: {
-      type: Number,
-      required: true
-    }
-  }],
-  // Topping thêm
-  toppings: [{
+  // Trọng lượng / Quy cách
+  weight: {
+    type: String,
+    default: ''
+  },
+  // Đơn vị (g, kg, gói, hộp, lon...)
+  unit: {
+    type: String,
+    default: ''
+  },
+  // Thương hiệu
+  brand: {
+    type: String,
+    default: ''
+  },
+  // Xuất xứ
+  origin: {
+    type: String,
+    default: ''
+  },
+  // Phân loại / Biến thể (ví dụ: 250g, 500g, 1kg)
+  variants: [{
     name: String,
     price: Number
   }],
-  // Độ ngọt
-  sweetLevels: {
-    type: [String],
-    default: ['0%', '25%', '50%', '75%', '100%']
-  },
-  // Độ đá
-  iceLevels: {
-    type: [String],
-    default: ['Không đá', 'Ít đá', 'Bình thường', 'Nhiều đá']
-  },
   stock: {
     type: Number,
     default: 100

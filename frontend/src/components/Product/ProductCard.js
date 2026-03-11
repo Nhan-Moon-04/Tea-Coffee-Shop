@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
 
     await addToCart(product._id, {
       quantity: 1,
-      size: product.sizes?.[0]?.name || 'M'
+      variant: product.variants?.[0]?.name || ''
     });
   };
 

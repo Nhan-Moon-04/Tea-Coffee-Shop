@@ -49,10 +49,7 @@ export const CartProvider = ({ children }) => {
       const response = await cartAPI.add({
         productId,
         quantity: options.quantity || 1,
-        size: options.size || 'M',
-        sweetLevel: options.sweetLevel || '100%',
-        iceLevel: options.iceLevel || 'Bình thường',
-        toppings: options.toppings || [],
+        variant: options.variant || '',
         note: options.note || ''
       });
       setCart(response.data.cart);

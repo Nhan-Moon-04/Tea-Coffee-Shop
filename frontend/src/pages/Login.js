@@ -164,7 +164,7 @@ const Login = () => {
 
         <div className="auth-banner">
           <div className="auth-banner-content">
-            <h2>Tea & Coffee Shop</h2>
+            <h2>Hiền Tea Coffee</h2>
             <p>Trải nghiệm hương vị tuyệt vời của trà và cà phê mỗi ngày</p>
             <img 
               src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500" 

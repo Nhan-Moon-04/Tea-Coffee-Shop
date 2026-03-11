@@ -124,36 +124,48 @@ const AdminCategories = () => {
         </button>
       </div>
 
-      <div className="categories-grid">
-        {categories.map((category) => (
-          <div key={category._id} className={`category-card ${!category.isActive ? 'inactive' : ''}`}>
-            <div className="category-image">
-              {category.image ? (
-                <img src={category.image} alt={category.name} />
-              ) : (
-                <FaImage />
-              )}
-            </div>
-            <div className="category-info">
-              <h3>{category.name}</h3>
-              <p>{category.description || 'Không có mô tả'}</p>
-              <div className="category-meta">
-                <span className={`status ${category.isActive ? 'active' : 'inactive'}`}>
-                  {category.isActive ? 'Hoạt động' : 'Ẩn'}
-                </span>
-                <span className="order">Thứ tự: {category.order || 0}</span>
-              </div>
-            </div>
-            <div className="category-actions">
-              <button className="btn-edit" onClick={() => handleEdit(category)}>
-                <FaEdit />
-              </button>
-              <button className="btn-delete" onClick={() => handleDelete(category._id)}>
-                <FaTrash />
-              </button>
-            </div>
-          </div>
-        ))}
+      <div className="cat-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Hình ảnh</th>
+              <th>Tên danh mục</th>
+              <th>Mô tả</th>
+              <th>Trạng thái</th>
+              <th>Thứ tự</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categories.map((category) => (
+              <tr key={category._id} className={!category.isActive ? 'row-inactive' : ''}>
+                <td className="cat-img-cell">
+                  {category.image ? (
+                    <img src={category.image} alt={category.name} />
+                  ) : (
+                    <div className="cat-img-placeholder"><FaImage /></div>
+                  )}
+                </td>
+                <td className="cat-name">{category.name}</td>
+                <td className="cat-desc">{category.description || '—'}</td>
+                <td>
+                  <span className={`cat-status ${category.isActive ? 'active' : 'inactive'}`}>
+                    {category.isActive ? 'Hoạt động' : 'Ẩn'}
+                  </span>
+                </td>
+                <td className="cat-order">{category.order || 0}</td>
+                <td className="cat-actions">
+                  <button className="cat-btn-edit" onClick={() => handleEdit(category)}>
+                    <FaEdit /> Sửa
+                  </button>
+                  <button className="cat-btn-delete" onClick={() => handleDelete(category._id)}>
+                    <FaTrash /> Xóa
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
         {categories.length === 0 && (
           <div className="empty-state">

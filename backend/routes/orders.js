@@ -151,10 +151,7 @@ router.post('/', protect, async (req, res) => {
       name: item.product.name,
       thumbnail: item.product.thumbnail,
       quantity: item.quantity,
-      size: item.size,
-      sweetLevel: item.sweetLevel,
-      iceLevel: item.iceLevel,
-      toppings: item.toppings,
+      variant: item.variant,
       price: item.price,
       note: item.note
     }));

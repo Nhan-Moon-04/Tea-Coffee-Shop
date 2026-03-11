@@ -10,7 +10,7 @@ const { protect } = require('../middleware/auth');
 router.get('/', protect, async (req, res) => {
   try {
     let cart = await Cart.findOne({ user: req.user.id })
-      .populate('items.product', 'name thumbnail price salePrice sizes isActive');
+      .populate('items.product', 'name thumbnail price salePrice variants isActive');
 
     if (!cart) {
       cart = await Cart.create({ user: req.user.id, items: [] });
@@ -34,7 +34,7 @@ router.get('/', protect, async (req, res) => {
 // @access  Private
 router.post('/', protect, async (req, res) => {
   try {
-    const { productId, quantity, size, sweetLevel, iceLevel, toppings, note } = req.body;
+    const { productId, quantity, variant, note } = req.body;
 
     // Check product exists
     const product = await Product.findById(productId);
@@ -45,12 +45,12 @@ router.post('/', protect, async (req, res) => {
       });
     }
 
-    // Calculate price based on size
+    // Calculate price based on variant
     let itemPrice = product.salePrice || product.price;
-    if (size && product.sizes.length > 0) {
-      const sizeOption = product.sizes.find(s => s.name === size);
-      if (sizeOption) {
-        itemPrice = sizeOption.price;
+    if (variant && product.variants && product.variants.length > 0) {
+      const variantOption = product.variants.find(v => v.name === variant);
+      if (variantOption) {
+        itemPrice = variantOption.price;
       }
     }
 
@@ -60,13 +60,10 @@ router.post('/', protect, async (req, res) => {
       cart = new Cart({ user: req.user.id, items: [] });
     }
 
-    // Check if item with same options exists
+    // Check if item with same variant exists
     const existingItemIndex = cart.items.findIndex(item => 
       item.product.toString() === productId &&
-      item.size === size &&
-      item.sweetLevel === sweetLevel &&
-      item.iceLevel === iceLevel &&
-      JSON.stringify(item.toppings) === JSON.stringify(toppings || [])
+      item.variant === (variant || '')
     );
 
     if (existingItemIndex > -1) {
@@ -75,10 +72,7 @@ router.post('/', protect, async (req, res) => {
       cart.items.push({
         product: productId,
         quantity: quantity || 1,
-        size: size || 'M',
-        sweetLevel: sweetLevel || '100%',
-        iceLevel: iceLevel || 'Bình thường',
-        toppings: toppings || [],
+        variant: variant || '',
         price: itemPrice,
         note
       });
@@ -87,7 +81,7 @@ router.post('/', protect, async (req, res) => {
     await cart.save();
 
     cart = await Cart.findOne({ user: req.user.id })
-      .populate('items.product', 'name thumbnail price salePrice sizes isActive');
+      .populate('items.product', 'name thumbnail price salePrice variants isActive');
 
     res.json({
       success: true,
@@ -137,7 +131,7 @@ router.put('/:itemId', protect, async (req, res) => {
     await cart.save();
 
     cart = await Cart.findOne({ user: req.user.id })
-      .populate('items.product', 'name thumbnail price salePrice sizes isActive');
+      .populate('items.product', 'name thumbnail price salePrice variants isActive');
 
     res.json({
       success: true,
@@ -171,7 +165,7 @@ router.delete('/:itemId', protect, async (req, res) => {
     await cart.save();
 
     cart = await Cart.findOne({ user: req.user.id })
-      .populate('items.product', 'name thumbnail price salePrice sizes isActive');
+      .populate('items.product', 'name thumbnail price salePrice variants isActive');
 
     res.json({
       success: true,
